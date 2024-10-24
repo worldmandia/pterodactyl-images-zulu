@@ -1,4 +1,4 @@
-# New images will not be added
+# This repository is not maintained
 
 I no longer use the specified game panels and thus, do not need these images. Feel free to fork and add your own. Thanks!
 
