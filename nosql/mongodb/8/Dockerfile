@@ -4,8 +4,9 @@ LABEL       author="Michael Parker" maintainer="parker@pterodactyl.io"
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
-RUN         apt update -y \
-            && apt install -y netcat iproute2 \
+RUN         apt-get update \
+            && apt-get -y install netcat iproute2 \
+            && apt-get clean \
             && useradd -d /home/container -m container -s /bin/bash
 
 USER        container
