@@ -1,4 +1,4 @@
-name: build java_zulu
+name: build mongodb
 
 on:
   workflow_dispatch:
