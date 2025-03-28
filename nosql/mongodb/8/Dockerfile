@@ -1,4 +1,4 @@
-FROM        mongo:8-noble
+FROM        --platform=$TARGETOS/$TARGETARCH mongo:8-noble
 
 LABEL       author="Software-noob" maintainer="admin@softwarenoob.com"
 LABEL       org.opencontainers.image.source="https://github.com/Software-Noob/pterodactyl-images"
