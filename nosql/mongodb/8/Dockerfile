@@ -7,7 +7,7 @@ LABEL       org.opencontainers.image.licenses="MIT"
 ENV         DEBIAN_FRONTEND noninteractive
 
 RUN         apt-get update \
-            && apt-get -y install --no-install-recommends curl netcat-openbsd iproute2 \
+            && apt-get -y install --no-install-recommends curl netcat-openbsd iproute2 locales \
             && apt-get clean \
             && rm -rf /var/lib/apt/lists/* \
             && useradd -m -d /home/container container \
