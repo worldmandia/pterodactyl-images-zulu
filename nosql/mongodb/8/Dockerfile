@@ -1,4 +1,4 @@
-FROM        mongo:8-noble
+FROM        mongo/mongo:8-noble
 
 LABEL       author="Michael Parker" maintainer="parker@pterodactyl.io"
 
