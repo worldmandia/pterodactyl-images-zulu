@@ -7,7 +7,7 @@ LABEL       org.opencontainers.image.licenses="MIT"
 ENV         DEBIAN_FRONTEND noninteractive
 
 RUN         apt-get update \
-            && apt-get -y install --no-install-recommends gnupg curl \
+            && apt-get -y install --no-install-recommends curl gnupg netcat iproute2 \
             && apt-get clean \
             && rm -rf /var/lib/apt/lists/* \
             && useradd -m -d /home/container container \
