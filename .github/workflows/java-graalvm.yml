@@ -53,4 +53,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           file: ./java-graalvm/${{ matrix.tag }}/Dockerfile
           push: true
-          tags: ghcr.io/software-noob/pterodactyl-images:java_${{ matrix.tag }}_graalvm
+          tags: ghcr.io/worldmandia/pterodactyl-images:java_${{ matrix.tag }}_graalvm
