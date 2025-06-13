@@ -2,7 +2,8 @@ FROM        --platform=$TARGETOS/$TARGETARCH owntracks/recorder:latest
 
 ENV         DEBIAN_FRONTEND noninteractive
 
-RUN         apt-get update \
+RUN         apt-add-repository ppa:mosquitto-dev/mosquitto-ppa \
+            && apt-get update \
             && apt-get -y install --no-install-recommends curl netcat-openbsd iproute2 locales libmosquitto-dev libcurl3 libcurl4-openssl-dev libconfig-dev liblmdb-dev uuid-dev \
             && apt-get clean \
             && rm -rf /var/lib/apt/lists/* \
