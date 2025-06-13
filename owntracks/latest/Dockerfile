@@ -3,7 +3,7 @@ FROM        --platform=$TARGETOS/$TARGETARCH owntracks/recorder:latest
 ENV         DEBIAN_FRONTEND noninteractive
 
 RUN         apt-get update \
-            && apt-get -y install --no-install-recommends curl netcat-openbsd iproute2 locales build-essential linux-headers-$(uname -r) libcurl4-openssl-dev libmosquitto-dev liblua5.2-dev libsodium-dev libconfig-dev uuid-dev \
+            && apt-get -y install --no-install-recommends curl netcat-openbsd iproute2 locales libmosquitto-dev libcurl3 libcurl4-openssl-dev libconfig-dev liblmdb-dev uuid-dev \
             && apt-get clean \
             && rm -rf /var/lib/apt/lists/* \
             && useradd -m -d /home/container container \
