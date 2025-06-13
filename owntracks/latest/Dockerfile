@@ -19,12 +19,14 @@ RUN apk add --no-cache \
         lua5.2-dev \
 	util-linux-dev
 
-RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder /src/recorder
-WORKDIR /src/recorder
+RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder /home/container
+USER        container
+ENV         USER=container HOME=/home/container
+WORKDIR     /home/container
 
 COPY config.mk .
 RUN make -j $(nprocs)
-RUN make install DESTDIR=/app
+RUN make install DESTDIR=/home/container
 
 FROM alpine:3.21.0
 
