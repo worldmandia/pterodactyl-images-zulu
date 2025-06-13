@@ -46,8 +46,8 @@ RUN apk add --no-cache \
 
 ENV TZ="UTC"
 
-COPY recorder.conf /config/recorder.conf
-COPY JSON.lua /config/JSON.lua
+COPY ./recorder.conf /config/recorder.conf
+COPY ./JSON.lua /config/JSON.lua
 
 COPY --from=builder /app /
 
