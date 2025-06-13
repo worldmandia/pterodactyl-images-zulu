@@ -30,6 +30,7 @@ done
 
 if [ ! -f "ot-recorder.conf" ]; then
     cat > ot-recorder.conf << EOF
+# OwnTracks Recorder Configuration
 OTR_HOST = "${OTR_HOST:-0.0.0.0}"
 OTR_PORT = ${OTR_PORT:-8083}
 OTR_STORAGEDIR = "${OTR_STORAGEDIR:-/home/container/data}"
@@ -59,7 +60,14 @@ fi
 mkdir -p "${OTR_STORAGEDIR:-/home/container/data}"
 mkdir -p "${OTR_HTTPLOGDIR:-/home/container/data}"
 
-echo "Starting OwnTracks Recorder..."
+if ! command -v ot-recorder >/dev/null 2>&1; then
+    echo "ERROR: ot-recorder not found in PATH"
+    echo "Available executables:"
+    find /usr -name "*recorder*" 2>/dev/null || echo "No recorder executables found"
+    exit 1
+fi
+
+echo "Found ot-recorder at: $(which ot-recorder)"
 echo "Config file: ot-recorder.conf"
 echo "Storage directory: ${OTR_STORAGEDIR:-/home/container/data}"
 echo "HTTP host: ${OTR_HTTPHOST:-0.0.0.0}"

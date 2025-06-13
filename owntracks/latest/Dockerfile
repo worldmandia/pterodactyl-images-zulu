@@ -1,28 +1,53 @@
-FROM owntracks/recorder:latest as owntracks
+FROM ubuntu:22.04
 
-FROM alpine:latest
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     openssl \
     git \
     tar \
-    sqlite \
+    sqlite3 \
     bash \
     dumb-init \
-    libcurl \
-    libconfig \
-    mosquitto-libs \
-    lmdb \
-    libsodium \
-    lua5.3
+    build-essential \
+    libcurl4-openssl-dev \
+    libconfig-dev \
+    libmosquitto-dev \
+    liblmdb-dev \
+    libsodium-dev \
+    liblua5.3-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=owntracks /usr/local/bin/ot-recorder /usr/local/bin/
-COPY --from=owntracks /usr/local/bin/ocat /usr/local/bin/
-COPY --from=owntracks /usr/local/share/ot-recorder/ /usr/local/share/ot-recorder/
+WORKDIR /tmp
+RUN git clone https://github.com/owntracks/recorder.git && \
+    cd recorder && \
+    cp config.mk.in config.mk && \
+    make && \
+    make install
 
-RUN adduser -D -h /home/container container
+RUN apt-get update && apt-get remove -y \
+    build-essential \
+    libcurl4-openssl-dev \
+    libconfig-dev \
+    libmosquitto-dev \
+    liblmdb-dev \
+    libsodium-dev \
+    liblua5.3-dev \
+    pkg-config \
+    && apt-get autoremove -y \
+    && apt-get install -y \
+    libcurl4 \
+    libconfig9 \
+    libmosquitto1 \
+    liblmdb0 \
+    libsodium23 \
+    liblua5.3-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -d /home/container -m container
 
 RUN mkdir -p /home/container/data /home/container/config
 
