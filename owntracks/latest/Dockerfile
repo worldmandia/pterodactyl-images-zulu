@@ -1,66 +1,21 @@
-FROM ubuntu:22.04
+FROM        --platform=$TARGETOS/$TARGETARCH owntracks/recorder:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV         DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get install -y \
-    curl \
-    ca-certificates \
-    openssl \
-    git \
-    tar \
-    sqlite3 \
-    bash \
-    dumb-init \
-    build-essential \
-    libcurl4-openssl-dev \
-    libconfig-dev \
-    libmosquitto-dev \
-    liblmdb-dev \
-    libsodium-dev \
-    liblua5.3-dev \
-    pkg-config \
-    && rm -rf /var/lib/apt/lists/*
+RUN         apt-get update \
+            && apt-get -y install --no-install-recommends curl netcat-openbsd iproute2 locales build-essential linux-headers-$(uname -r) libcurl4-openssl-dev libmosquitto-dev liblua5.2-dev libsodium-dev libconfig-dev uuid-dev \
+            && apt-get clean \
+            && rm -rf /var/lib/apt/lists/* \
+            && useradd -m -d /home/container container \
+            && locale-gen en_US.UTF-8
 
-WORKDIR /tmp
-RUN git clone https://github.com/owntracks/recorder.git && \
-    cd recorder && \
-    cp config.mk.in config.mk && \
-    make && \
-    make install
+ENV         LC_ALL=en_US.UTF-8
+ENV         LANG=en_US.UTF-8
+ENV         LANGUAGE=en_US.UTF-8
 
-RUN apt-get update && apt-get remove -y \
-    build-essential \
-    libcurl4-openssl-dev \
-    libconfig-dev \
-    libmosquitto-dev \
-    liblmdb-dev \
-    libsodium-dev \
-    liblua5.3-dev \
-    pkg-config \
-    && apt-get autoremove -y \
-    && apt-get install -y \
-    libcurl4 \
-    libconfig9 \
-    libmosquitto1 \
-    liblmdb0 \
-    libsodium23 \
-    liblua5.3-0 \
-    && rm -rf /var/lib/apt/lists/*
+USER        container
+ENV         USER=container HOME=/home/container
+WORKDIR     /home/container
 
-RUN useradd -d /home/container -m container
-
-RUN mkdir -p /home/container/data /home/container/config
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-RUN chown -R container:container /home/container
-
-USER container
-ENV USER=container HOME=/home/container
-WORKDIR /home/container
-
-STOPSIGNAL SIGINT
-
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["/entrypoint.sh"]
+COPY        ./entrypoint.sh /entrypoint.sh
+CMD         [ "/bin/bash", "/entrypoint.sh" ]
