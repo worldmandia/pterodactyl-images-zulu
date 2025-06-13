@@ -51,8 +51,8 @@ COPY JSON.lua /config/JSON.lua
 
 COPY --from=builder /app /
 
-COPY recorder-health.sh /usr/sbin/recorder-health.sh
-COPY entrypoint.sh /usr/sbin/entrypoint.sh
+COPY ./recorder-health.sh /usr/sbin/recorder-health.sh
+COPY ./entrypoint.sh /usr/sbin/entrypoint.sh
 
 RUN chmod +x /usr/sbin/*.sh
 RUN chmod +r /config/recorder.conf
