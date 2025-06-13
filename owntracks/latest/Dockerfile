@@ -1,7 +1,7 @@
 FROM alpine:3.21.0 AS builder
 
-ARG RECORDER_VERSION=0.9.9
-# ARG RECORDER_VERSION=master
+# ARG RECORDER_VERSION=0.9.9
+ARG RECORDER_VERSION=master
 
 ENV DOCKER_RUNNING=1
 
@@ -20,13 +20,11 @@ RUN apk add --no-cache \
 	util-linux-dev
 
 RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder /home/container
-USER        container
-ENV         USER=container HOME=/home/container
 WORKDIR     /home/container
 
 COPY config.mk .
 RUN make -j $(nprocs)
-RUN make install DESTDIR=/home/container
+RUN make install DESTDIR=/app
 
 FROM alpine:3.21.0
 
@@ -64,4 +62,4 @@ ENV         USER=container HOME=/home/container
 WORKDIR     /home/container
 
 COPY        ./entrypoint.sh /entrypoint.sh
-CMD         [ "/entrypoint.sh" ]
+CMD         [ "/bin/bash", "/entrypoint.sh" ]
