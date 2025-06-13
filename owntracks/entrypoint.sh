@@ -1,11 +1,9 @@
 #!/bin/bash
-cd /home/container || exit 1
-
-CYAN='\033[0;36m'
-RESET_COLOR='\033[0m'
+cd /home/container
 
 function apply_path {
     if [ -f "$1" ]; then
+
         sed -i "s|\${SERVER_JARFILE}|${SERVER_JARFILE}|g" "$1"
         sed -i "s|\${STARTUP}|${STARTUP}|g" "$1"
 
@@ -36,15 +34,26 @@ OTR_HOST = "${OTR_HOST:-0.0.0.0}"
 OTR_PORT = ${OTR_PORT:-8083}
 OTR_STORAGEDIR = "${OTR_STORAGEDIR:-/home/container/data}"
 OTR_TOPICS = "${OTR_TOPICS:-owntracks/+/+}"
-OTR_BROWSERAPIKEY = "${OTR_BROWSERAPIKEY}"
 OTR_HTTPHOST = "${OTR_HTTPHOST:-0.0.0.0}"
 OTR_HTTPPORT = ${OTR_HTTPPORT:-8083}
 OTR_HTTPLOGDIR = "${OTR_HTTPLOGDIR:-/home/container/data}"
+
+# MQTT Configuration
 MQTT_HOST = "${MQTT_HOST:-localhost}"
 MQTT_PORT = ${MQTT_PORT:-1883}
-MQTT_USER = "${MQTT_USER}"
-MQTT_PASS = "${MQTT_PASS}"
 EOF
+
+    if [ -n "$MQTT_USER" ]; then
+        echo "MQTT_USER = \"$MQTT_USER\"" >> ot-recorder.conf
+    fi
+
+    if [ -n "$MQTT_PASS" ]; then
+        echo "MQTT_PASS = \"$MQTT_PASS\"" >> ot-recorder.conf
+    fi
+
+    if [ -n "$OTR_BROWSERAPIKEY" ]; then
+        echo "OTR_BROWSERAPIKEY = \"$OTR_BROWSERAPIKEY\"" >> ot-recorder.conf
+    fi
 fi
 
 mkdir -p "${OTR_STORAGEDIR:-/home/container/data}"

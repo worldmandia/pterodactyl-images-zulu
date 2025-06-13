@@ -1,16 +1,28 @@
-FROM owntracks/recorder:latest
+FROM owntracks/recorder:latest as owntracks
 
-RUN apt-get update && apt-get install -y \
+FROM alpine:latest
+
+RUN apk add --no-cache \
     curl \
     ca-certificates \
     openssl \
     git \
     tar \
-    sqlite3 \
+    sqlite \
     bash \
-    && rm -rf /var/lib/apt/lists/*
+    dumb-init \
+    libcurl \
+    libconfig \
+    mosquitto-libs \
+    lmdb \
+    libsodium \
+    lua5.3
 
-RUN useradd -d /home/container -m container
+COPY --from=owntracks /usr/local/bin/ot-recorder /usr/local/bin/
+COPY --from=owntracks /usr/local/bin/ocat /usr/local/bin/
+COPY --from=owntracks /usr/local/share/ot-recorder/ /usr/local/share/ot-recorder/
+
+RUN adduser -D -h /home/container container
 
 RUN mkdir -p /home/container/data /home/container/config
 
