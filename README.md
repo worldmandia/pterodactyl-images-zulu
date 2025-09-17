@@ -20,7 +20,7 @@ Navigate to `Admin Panel -> Nests -> Select your egg`. Add Docker image URL(s) f
 ### Java Azul Zulu [AMD64/ARM64]
 
 - [Java 24 Zulu](https://github.com/trenutoo/pterodactyl-images/tree/main/java-zulu/24)
-  - `ghcr.io/worldmandia/pterodactyl-images:java_24_zulu`
+  - `ghcr.io/worldmandia/pterodactyl-images:java_25_zulu`
 
 ### Java GraalVM [AMD64/ARM64]
 

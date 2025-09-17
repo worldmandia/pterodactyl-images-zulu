@@ -1,4 +1,4 @@
-FROM        azul/zulu-openjdk:24
+FROM        azul/zulu-openjdk:25-jdk-crac-latest
 
 LABEL       author="Software-noob" maintainer="admin@softwarenoob.com"
 LABEL       org.opencontainers.image.source="https://github.com/Software-Noob/pterodactyl-images"
