@@ -7,7 +7,7 @@ LABEL       org.opencontainers.image.licenses="MIT"
 ENV         DEBIAN_FRONTEND noninteractive
 
 RUN         apt-get update \
-            && apt-get -y install --no-install-recommends curl ffmpeg iproute2 git sqlite3 python3 tzdata ca-certificates dnsutils fontconfig libfreetype6 libstdc++6 lsof build-essential locales libnuma1 libnuma-dev \
+            && apt-get -y install --no-install-recommends curl ffmpeg iproute2 git sqlite3 python3 tzdata ca-certificates dnsutils fontconfig libfreetype6 libstdc++6 lsof build-essential locales libnuma1 numactl \
             && apt-get clean \
             && rm -rf /var/lib/apt/lists/* \
             && useradd -m -d /home/container container \
