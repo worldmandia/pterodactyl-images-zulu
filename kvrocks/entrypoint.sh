@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/container
+cd /home/container || exit 1
 
 # Make internal Docker IP address available to processes.
 INTERNAL_IP=$(ip route get 1 | awk '{print $(NF-2);exit}')
