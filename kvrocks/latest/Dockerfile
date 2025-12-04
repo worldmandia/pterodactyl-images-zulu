@@ -8,7 +8,7 @@ ENV     DEBIAN_FRONTEND=noninteractive
 USER root
 
 RUN apt-get update \
-    && apt-get -y install --no-install-recommends iproute2 \
+    && apt-get -y install --no-install-recommends iproute2 locales \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && useradd -m -d /home/container container \
