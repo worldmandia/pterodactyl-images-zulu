@@ -5,10 +5,9 @@ FROM    --platform=$TARGETOS/$TARGETARCH apache/kvrocks:nightly
 
 ENV     DEBIAN_FRONTEND=noninteractive
 
-RUN     apt -y update && \
-        apt -y upgrade && \
-        apt -y install iproute2 && \
-        useradd -d /home/container -m container -s /bin/bash
+RUN     apt-get update \
+        && apt-get -y install --no-install-recommends iproute2 && \
+        && useradd -m -d /home/container container \
 
 USER    container
 ENV     USER=container HOME=/home/container
