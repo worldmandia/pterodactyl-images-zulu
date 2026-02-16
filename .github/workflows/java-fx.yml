@@ -49,8 +49,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
-          context: ./java-zulu
+          context: ./java-fx
           platforms: linux/amd64, linux/arm64
-          file: ./java-zulu/${{ matrix.tag }}/Dockerfile
+          file: ./java-fx/${{ matrix.tag }}/Dockerfile
           push: true
           tags: ghcr.io/worldmandia/pterodactyl-images:java_${{ matrix.tag }}_fx

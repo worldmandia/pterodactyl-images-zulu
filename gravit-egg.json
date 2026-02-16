@@ -1,0 +1,62 @@
+{
+  "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2024-05-20T23:25:00+03:00",
+  "name": "GravitLauncher",
+  "author": "support@worldmandia.cc",
+  "description": "GravitLauncher pterodactyl",
+  "features": null,
+  "docker_images": {
+    "GravitLauncher Java 25": "ghcr.io/worldmandia/pterodactyl-images:java_25_fx"
+  },
+  "file_denylist": [],
+  "startup": "bin/launchserver",
+  "config": {
+    "files": "{}",
+    "startup": "{\r\n    \"done\": \"Starting netty server socket thread\",\r\n    \"userInteraction\": []\r\n}",
+    "logs": "{}",
+    "stop": "stop"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/ash\r\n# Gravit LaunchServer installation script\r\n# Supports: Stable (GitHub Releases) & Dev (GitHub Actions Artifacts)\r\n\r\napk add --no-cache curl unzip\r\n\r\nif [ ! -d /mnt/server ]; then\r\n    mkdir /mnt/server/\r\nfi\r\n\r\ncd /mnt/server/\r\n\r\nVERSION=\"${SERVER_VERSION}\"\r\n\r\nif [ \"$VERSION\" = \"dev\" ]; then\r\n    echo \"----------------------------------------\"\r\n    echo \"🛠️  DETECTED DEV MODE\"\r\n    echo \"Downloading latest artifact from GitHub Actions (workflow: push)...\"\r\n    echo \"----------------------------------------\"\r\n    \r\n    # Скачиваем артефакт 'Launcher' из workflow 'push' ветки 'master'\r\n    curl -L -o artifact.zip \"https://nightly.link/GravitLauncher/Launcher/workflows/push/master/Launcher.zip\"\r\n    \r\n    if [ ! -f artifact.zip ]; then\r\n        echo \"❌ Error: Failed to download artifact from nightly.link. Check if GitHub Actions are passing.\"\r\n        exit 1\r\n    fi\r\n\r\n    echo \"📦 Unpacking GitHub Artifact...\"\r\n    unzip -o artifact.zip\r\n    rm artifact.zip\r\n    \r\n    # Внутри артефакта, согласно вашему YAML, лежат:\r\n    # 1. artifacts/LaunchServerBuild.zip (или просто в корне, зависит от того как action пакует)\r\n    # 2. ServerWrapper.jar\r\n    \r\n    if [ -f \"LaunchServerBuild.zip\" ]; then\r\n        echo \"📦 Unpacking LaunchServer Distribution...\"\r\n        unzip -o LaunchServerBuild.zip\r\n        rm LaunchServerBuild.zip\r\n    elif [ -f \"artifacts/LaunchServerBuild.zip\" ]; then\r\n        echo \"📦 Unpacking LaunchServer Distribution (from subdir)...\"\r\n        mv artifacts/* .\r\n        rmdir artifacts\r\n        unzip -o LaunchServerBuild.zip\r\n        rm LaunchServerBuild.zip\r\n    else\r\n        echo \"⚠️ Warning: LaunchServerBuild.zip not found inside artifact. Structure might have changed.\"\r\n    fi\r\n\r\n    echo \"✅ Dev build installed.\"\r\n\r\nelse\r\n    echo \"----------------------------------------\"\r\n    echo \"🚀 DETECTED STABLE MODE: $VERSION\"\r\n    echo \"Downloading from GitHub Releases...\"\r\n    echo \"----------------------------------------\"\r\n    \r\n    if [ \"$VERSION\" = \"latest\" ]; then \r\n        VERSION=$(curl --silent \"https://api.github.com/repos/GravitLauncher/Launcher/releases/latest\" | grep '\"tag_name\":' | sed -E 's/.*\"([^\"]+)\".*/\\1/' | cut -c2-)\r\n    fi\r\n\r\n    curl -L \"https://github.com/GravitLauncher/Launcher/releases/download/v${VERSION}/LaunchServer.jar\" --output LaunchServer.jar \r\n    curl -L \"https://github.com/GravitLauncher/Launcher/releases/download/v${VERSION}/ServerWrapper.jar\" --output ServerWrapper.jar\r\n    curl -L \"https://github.com/GravitLauncher/Launcher/releases/download/v${VERSION}/libraries.zip\" --output libraries.zip\r\n    curl -L \"https://github.com/GravitLauncher/Launcher/releases/download/v${VERSION}/LaunchServerModules.zip\" --output LaunchServerModules.zip\r\n    curl -L \"https://github.com/GravitLauncher/Launcher/releases/download/v${VERSION}/LauncherModules.zip\" --output LauncherModules.zip\r\n    \r\n    unzip -o libraries.zip\r\n    rm libraries.zip\r\n    \r\n    echo \"✅ Stable release installed.\"\r\nfi\r\n\r\n# --- RUNTIME SECTION ---\r\ndownloading_r=${SHOULD_DOWNLOAD_RUNTIME}\r\nif [ \"$downloading_r\" = \"1\" ] || [ \"$downloading_r\" = \"true\" ]; then\r\n    echo \" \"\r\n    echo \"☕ Downloading Runtime...\"\r\n    \r\n    r_version=${RUNTIME_VERSION}\r\n    if [ \"$r_version\" = \"latest\" ] || [ \"$r_version\" = \"dev\" ]; then \r\n        r_version=$(curl --silent \"https://api.github.com/repos/GravitLauncher/LauncherRuntime/releases/latest\" | grep '\"tag_name\":' | sed -E 's/.*\"([^\"]+)\".*/\\1/' | cut -c2-)\r\n    fi\r\n\r\n    curl -L \"https://github.com/GravitLauncher/LauncherRuntime/releases/download/v${r_version}/JavaRuntime_lmodule.jar\" --output JavaRuntime-${r_version}.jar \r\n    curl -L \"https://github.com/GravitLauncher/LauncherRuntime/releases/download/v${r_version}/runtime.zip\" --output runtime.zip\r\n    mkdir -p runtime/\r\n    unzip -o runtime.zip -d runtime/\r\n    rm runtime.zip\r\nfi\r\n\r\necho \"🎉 Installation Complete!\"",
+      "container": "alpine:3.23.3",
+      "entrypoint": "ash"
+    }
+  },
+  "variables": [
+    {
+      "name": "LaunchServer Version",
+      "description": "Version to install. Use 'latest' for stable release or 'dev' for the latest GitHub Actions build.",
+      "env_variable": "SERVER_VERSION",
+      "default_value": "dev",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:20",
+      "field_type": "text"
+    },
+    {
+      "name": "Runtime Version",
+      "description": "Version of Gravit Runtime.",
+      "env_variable": "RUNTIME_VERSION",
+      "default_value": "latest",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:20",
+      "field_type": "text"
+    },
+    {
+      "name": "Download Runtime",
+      "description": "Download Runtime? (0 or 1)",
+      "env_variable": "SHOULD_DOWNLOAD_RUNTIME",
+      "default_value": "1",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|boolean",
+      "field_type": "text"
+    }
+  ]
+}
