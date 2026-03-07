@@ -25,6 +25,13 @@ else
     printf "\033[1m\033[31m[WARNING]\033[0m JMODS dir not found! LaunchServer compilation might fail if JavaFX is missing.\n"
 fi
 
+# --- FIX: Ensure launchserver is executable ---
+if [ -f "bin/launchserver" ]; then
+    chmod +x bin/launchserver
+    printf "\033[1m\033[32m[INFO]\033[0m Applied execute permissions to bin/launchserver\n"
+fi
+# ----------------------------------------------
+
 PARSED=$(echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g' | eval echo "$(cat -)")
 
 printf "\033[1m\033[33mcontainer@gravitlauncher~ \033[0m%s\n" "$PARSED"
